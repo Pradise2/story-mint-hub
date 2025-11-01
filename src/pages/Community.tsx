@@ -1,7 +1,34 @@
 import { Trophy, TrendingUp, Vote } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs as SubTabs, TabsContent as SubTabsContent, TabsList as SubTabsList, TabsTrigger as SubTabsTrigger } from "@/components/ui/tabs";
+import { LeaderboardTable } from "@/components/community/LeaderboardTable";
+import { WeeklyVoting } from "@/components/community/WeeklyVoting";
+import {
+  mockLeaderboardTraders,
+  mockLeaderboardCollectors,
+  mockLeaderboardFavorites,
+  mockWeeklyStories,
+} from "@/types/community";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const Community = () => {
+  const [weeklyStories, setWeeklyStories] = useState(mockWeeklyStories);
+
+  const handleViewStory = (storyId: string) => {
+    toast.info("Story view coming soon!");
+  };
+
+  const handleVote = (storyId: string) => {
+    setWeeklyStories((prev) =>
+      prev.map((story) =>
+        story.id === storyId
+          ? { ...story, hasVoted: true, votes: story.votes + 1 }
+          : story
+      )
+    );
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
@@ -25,35 +52,63 @@ const Community = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="leaderboards">
-          <div className="glass-card rounded-xl p-8 border border-primary/20 text-center">
-            <div className="max-w-md mx-auto space-y-4">
-              <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-neon/20 mb-4">
-                <TrendingUp className="h-10 w-10 text-primary" />
+        <TabsContent value="leaderboards" className="space-y-6">
+          <SubTabs defaultValue="traders">
+            <SubTabsList className="glass-card border-primary/20 mb-6">
+              <SubTabsTrigger value="traders">Top Traders</SubTabsTrigger>
+              <SubTabsTrigger value="collectors">Top Collectors</SubTabsTrigger>
+              <SubTabsTrigger value="favorites">Community Favorites</SubTabsTrigger>
+            </SubTabsList>
+
+            <SubTabsContent value="traders">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Top Traders by Volume</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Ranked by total transaction volume across all protocols
+                  </p>
+                </div>
+                <LeaderboardTable
+                  entries={mockLeaderboardTraders}
+                  onViewStory={handleViewStory}
+                />
               </div>
-              <h3 className="text-2xl font-semibold">Leaderboards Coming Soon</h3>
-              <p className="text-muted-foreground">
-                Compete with other users based on trading volume, moments minted, and
-                community favorites. Rankings will be available once more users join the
-                platform.
-              </p>
-            </div>
-          </div>
+            </SubTabsContent>
+
+            <SubTabsContent value="collectors">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Top Collectors by Moments</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Users who have minted the most Story NFTs
+                  </p>
+                </div>
+                <LeaderboardTable
+                  entries={mockLeaderboardCollectors}
+                  onViewStory={handleViewStory}
+                />
+              </div>
+            </SubTabsContent>
+
+            <SubTabsContent value="favorites">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Community Favorites by Likes</h3>
+                  <p className="text-sm text-muted-foreground">
+                    The most loved stories in the community
+                  </p>
+                </div>
+                <LeaderboardTable
+                  entries={mockLeaderboardFavorites}
+                  onViewStory={handleViewStory}
+                />
+              </div>
+            </SubTabsContent>
+          </SubTabs>
         </TabsContent>
 
         <TabsContent value="weekly">
-          <div className="glass-card rounded-xl p-8 border border-primary/20 text-center">
-            <div className="max-w-md mx-auto space-y-4">
-              <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-neon/20 mb-4">
-                <Vote className="h-10 w-10 text-primary" />
-              </div>
-              <h3 className="text-2xl font-semibold">Weekly Voting Coming Soon</h3>
-              <p className="text-muted-foreground">
-                Vote for the best transaction stories each week. The winning story will be
-                featured and the creator will receive special recognition.
-              </p>
-            </div>
-          </div>
+          <WeeklyVoting stories={weeklyStories} onVote={handleVote} />
         </TabsContent>
       </Tabs>
     </div>

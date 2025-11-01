@@ -83,10 +83,10 @@ const Studio = () => {
               <p className="text-sm text-muted-foreground">{voice.tagline}</p>
               {selectedVoice === voice.id && (
                 <div className="mt-3">
-                  <Button variant="glass" size="sm" className="w-full gap-2">
+                  <div className="inline-flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg glass-card border border-primary/30 hover:border-primary/50 hover:bg-card/80 text-sm transition-all">
                     <Volume2 className="h-3 w-3" />
-                    Preview
-                  </Button>
+                    <span>Preview</span>
+                  </div>
                 </div>
               )}
             </button>
