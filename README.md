@@ -9,7 +9,7 @@ AI Crypto Story converts the cold, technical data of blockchain transactions int
 
 > **"You just swapped 0.5 ETH for 20,000 PEPE on Uniswap — a bold move! Let’s hope those frogs can swim."**
 
-![AI Crypto Story Screenshot](https://lovable.dev/opengraph-image-p98pqg.png)
+
 
 ## Table of Contents
 
