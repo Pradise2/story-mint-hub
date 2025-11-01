@@ -136,4 +136,4 @@ Contributions are welcome! If you have ideas for new features, bug fixes, or imp
 
 ## ☁️ Deployment
 
-This project is configured for easy deployment on modern hosting platforms like Vercel, Netlify, or through services like [Lovable.dev](https://lovable.dev/). Simply connect your Git repository and the platform will handle the build and deployment process automatically.
+
