@@ -17,16 +17,15 @@ export const BottomNav = () => {
             key={item.title}
             to={item.url}
             end
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all min-w-[70px] ${
-                isActive
-                  ? "text-primary font-medium"
-                  : "text-muted-foreground hover:text-foreground"
-              }`
-            }
           >
             {({ isActive }) => (
-              <>
+              <div
+                className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all min-w-[70px] ${
+                  isActive
+                    ? "text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
                 <div
                   className={`relative ${
                     isActive ? "animate-float" : ""
@@ -42,7 +41,7 @@ export const BottomNav = () => {
                   )}
                 </div>
                 <span className="text-xs font-medium">{item.title}</span>
-              </>
+              </div>
             )}
           </NavLink>
         ))}
