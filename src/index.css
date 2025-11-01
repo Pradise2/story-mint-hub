@@ -130,4 +130,9 @@ All colors MUST be HSL.
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
   }
+
+  /* Safe area for mobile notches/home indicators */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
 }

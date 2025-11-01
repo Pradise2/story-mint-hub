@@ -8,6 +8,7 @@ import { wagmiAdapter } from "@/config/wallet";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Header } from "@/components/layout/Header";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import Index from "./pages/Index";
 import Moments from "./pages/Moments";
 import Community from "./pages/Community";
@@ -34,7 +35,7 @@ const App = () => {
                 <div className="flex w-full pt-16">
                   <AppSidebar />
                   
-                  <main className="flex-1 p-6 overflow-auto">
+                  <main className="flex-1 p-6 pb-24 overflow-auto">
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/moments" element={<Moments />} />
@@ -44,6 +45,8 @@ const App = () => {
                     </Routes>
                   </main>
                 </div>
+                
+                <BottomNav />
               </div>
             </SidebarProvider>
           </BrowserRouter>
