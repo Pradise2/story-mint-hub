@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { StoryCard } from "./StoryCard";
 import { mockStories } from "@/types/story";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const filterOptions = ["All", "Swaps", "Mints", "Staking", "DeFi", "NFTs"];
 
@@ -12,6 +20,10 @@ export const StoryFeed = () => {
   const [stories, setStories] = useState(mockStories);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const STORIES_PER_PAGE = 3;
+  const MAX_PAGES = 3;
 
   const handleLike = (id: string) => {
     setStories((prev) =>
@@ -22,8 +34,8 @@ export const StoryFeed = () => {
               isLiked: !story.isLiked,
               likes: story.isLiked ? story.likes - 1 : story.likes + 1,
             }
-          : story
-      )
+          : story,
+      ),
     );
   };
 
@@ -31,7 +43,7 @@ export const StoryFeed = () => {
     const story = stories.find((s) => s.id === id);
     if (story) {
       navigator.clipboard.writeText(
-        `Check out my crypto story: ${window.location.origin}/story/${id}`
+        `Check out my crypto story: ${window.location.origin}/story/${id}`,
       );
       toast.success("Story link copied to clipboard!");
     }
@@ -40,6 +52,13 @@ export const StoryFeed = () => {
   const handleMint = (id: string) => {
     toast.success("Minting feature coming soon! Connect Lovable Cloud to enable NFT minting.");
   };
+
+  // Pagination Logic
+  const totalPages = Math.min(MAX_PAGES, Math.ceil(stories.length / STORIES_PER_PAGE));
+  const currentStories = stories.slice(
+    (currentPage - 1) * STORIES_PER_PAGE,
+    currentPage * STORIES_PER_PAGE,
+  );
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -94,7 +113,7 @@ export const StoryFeed = () => {
 
       {/* Stories */}
       <div className="space-y-6">
-        {stories.map((story) => (
+        {currentStories.map((story) => (
           <StoryCard
             key={story.id}
             story={story}
@@ -104,6 +123,48 @@ export const StoryFeed = () => {
           />
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((prev) => Math.max(prev - 1, 1));
+                }}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                }}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
