@@ -1,6 +1,11 @@
-import { Trophy, TrendingUp, Vote } from "lucide-react";
+import { Trophy, Vote } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tabs as SubTabs, TabsContent as SubTabsContent, TabsList as SubTabsList, TabsTrigger as SubTabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs as SubTabs,
+  TabsContent as SubTabsContent,
+  TabsList as SubTabsList,
+  TabsTrigger as SubTabsTrigger,
+} from "@/components/ui/tabs";
 import { LeaderboardTable } from "@/components/community/LeaderboardTable";
 import { WeeklyVoting } from "@/components/community/WeeklyVoting";
 import {
@@ -11,9 +16,26 @@ import {
 } from "@/types/community";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const Community = () => {
   const [weeklyStories, setWeeklyStories] = useState(mockWeeklyStories);
+
+  // Pagination states
+  const [tradersPage, setTradersPage] = useState(1);
+  const [collectorsPage, setCollectorsPage] = useState(1);
+  const [favoritesPage, setFavoritesPage] = useState(1);
+  const [votingPage, setVotingPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 3;
+  const MAX_PAGES = 3;
 
   const handleViewStory = (storyId: string) => {
     toast.info("Story view coming soon!");
@@ -24,8 +46,67 @@ const Community = () => {
       prev.map((story) =>
         story.id === storyId
           ? { ...story, hasVoted: true, votes: story.votes + 1 }
-          : story
-      )
+          : story,
+      ),
+    );
+  };
+
+  // Memoize paginated data to avoid re-calculating on every render
+  const paginatedData = (data: any[], currentPage: number) => {
+    const totalPages = Math.min(MAX_PAGES, Math.ceil(data.length / ITEMS_PER_PAGE));
+    const paginatedItems = data.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE,
+    );
+    return { totalPages, paginatedItems };
+  };
+
+  const tradersData = paginatedData(mockLeaderboardTraders, tradersPage);
+  const collectorsData = paginatedData(mockLeaderboardCollectors, collectorsPage);
+  const favoritesData = paginatedData(mockLeaderboardFavorites, favoritesPage);
+  const votingData = paginatedData(weeklyStories, votingPage);
+
+  const renderPagination = (totalPages: number, currentPage: number, setCurrentPage: (page: number) => void) => {
+    if (totalPages <= 1) return null;
+    return (
+      <Pagination className="mt-6">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(Math.max(currentPage - 1, 1));
+              }}
+              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                href="#"
+                isActive={currentPage === i + 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(i + 1);
+                }}
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(Math.min(currentPage + 1, totalPages));
+              }}
+              className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     );
   };
 
@@ -69,9 +150,10 @@ const Community = () => {
                   </p>
                 </div>
                 <LeaderboardTable
-                  entries={mockLeaderboardTraders}
+                  entries={tradersData.paginatedItems}
                   onViewStory={handleViewStory}
                 />
+                {renderPagination(tradersData.totalPages, tradersPage, setTradersPage)}
               </div>
             </SubTabsContent>
 
@@ -84,9 +166,10 @@ const Community = () => {
                   </p>
                 </div>
                 <LeaderboardTable
-                  entries={mockLeaderboardCollectors}
+                  entries={collectorsData.paginatedItems}
                   onViewStory={handleViewStory}
                 />
+                {renderPagination(collectorsData.totalPages, collectorsPage, setCollectorsPage)}
               </div>
             </SubTabsContent>
 
@@ -99,16 +182,18 @@ const Community = () => {
                   </p>
                 </div>
                 <LeaderboardTable
-                  entries={mockLeaderboardFavorites}
+                  entries={favoritesData.paginatedItems}
                   onViewStory={handleViewStory}
                 />
+                {renderPagination(favoritesData.totalPages, favoritesPage, setFavoritesPage)}
               </div>
             </SubTabsContent>
           </SubTabs>
         </TabsContent>
 
         <TabsContent value="weekly">
-          <WeeklyVoting stories={weeklyStories} onVote={handleVote} />
+          <WeeklyVoting stories={votingData.paginatedItems} onVote={handleVote} />
+          {renderPagination(votingData.totalPages, votingPage, setVotingPage)}
         </TabsContent>
       </Tabs>
     </div>
