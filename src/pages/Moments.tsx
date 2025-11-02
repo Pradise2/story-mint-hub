@@ -11,10 +11,22 @@ import { MomentDetailModal } from "@/components/moments/MomentDetailModal";
 import { mockMoments } from "@/types/moment";
 import { useState } from "react";
 import { MomentNFT } from "@/types/moment";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const Moments = () => {
   const [selectedMoment, setSelectedMoment] = useState<MomentNFT | null>(null);
   const [sortBy, setSortBy] = useState("recent");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const MOMENTS_PER_PAGE = 4; // Updated to 4
+  const MAX_PAGES = 3;
 
   const sortedMoments = [...mockMoments].sort((a, b) => {
     if (sortBy === "recent") {
@@ -22,8 +34,16 @@ const Moments = () => {
     } else if (sortBy === "liked") {
       return b.likes - a.likes;
     }
+    // Note: Protocol sorting would require more complex logic
     return 0;
   });
+
+  // Pagination Logic
+  const totalPages = Math.min(MAX_PAGES, Math.ceil(sortedMoments.length / MOMENTS_PER_PAGE));
+  const currentMoments = sortedMoments.slice(
+    (currentPage - 1) * MOMENTS_PER_PAGE,
+    currentPage * MOMENTS_PER_PAGE,
+  );
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -62,8 +82,8 @@ const Moments = () => {
       </div>
 
       {/* Masonry Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {sortedMoments.map((moment) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+        {currentMoments.map((moment) => (
           <MomentCard
             key={moment.id}
             moment={moment}
@@ -71,6 +91,48 @@ const Moments = () => {
           />
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((prev) => Math.max(prev - 1, 1));
+                }}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                }}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {/* Detail Modal */}
       <MomentDetailModal
