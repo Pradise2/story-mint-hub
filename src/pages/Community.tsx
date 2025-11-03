@@ -168,7 +168,7 @@ const Community = () => {
               <SubTabsTrigger value="favorites">Community Favorites</SubTabsTrigger>
             </SubTabsList>
             <SubTabsContent value="traders">{renderLeaderboardTab(traders, tradersLoading, tradersError, refetchTraders, "Top Traders by Volume", "Ranked by total transaction volume across all protocols", [tradersPage, setTradersPage])}</SubTabsContent>
-            <SubTabsContent value="collectors">{renderLeaderboardTab(collectors, collectorsLoading, collectorsError, refetchCollectors, "Top Collectors by Moments", "Users who have minted the most Story NFTs", [collectorsPage, setCollectorsPage])}</SubTabs-Content>
+            <SubTabsContent value="collectors">{renderLeaderboardTab(collectors, collectorsLoading, collectorsError, refetchCollectors, "Top Collectors by Moments", "Users who have minted the most Story NFTs", [collectorsPage, setCollectorsPage])}</SubTabsContent>
             <SubTabsContent value="favorites">{renderLeaderboardTab(favorites, favoritesLoading, favoritesError, refetchFavorites, "Community Favorites by Likes", "The most loved stories in the community", [favoritesPage, setFavoritesPage])}</SubTabsContent>
           </SubTabs>
         </TabsContent>
