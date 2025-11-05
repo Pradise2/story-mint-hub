@@ -15,15 +15,23 @@ import Community from "./pages/Community";
 import Studio from "./pages/Studio";
 import NotFound from "./pages/NotFound";
 import { useState } from "react";
+import { sdk as miniAppSdk } from '@farcaster/miniapp-sdk'
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+function FarcasterProvider({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    miniAppSdk.actions.ready();
+  }, []);
 
+  return <>{children}</>;
+}
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
+            <FarcasterProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -51,6 +59,7 @@ const App = () => {
             </SidebarProvider>
           </BrowserRouter>
         </TooltipProvider>
+               </FarcasterProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
