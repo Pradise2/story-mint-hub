@@ -116,8 +116,6 @@ To run the application, you need to provide a WalletConnect Project ID. You can 
 
 -   `VITE_REOWN_PROJECT_ID`: Your unique project ID from WalletConnect Cloud.
 
-**Example `.env` file:**
-
 ```
 VITE_REOWN_PROJECT_ID=your-project-id-goes-here
 ```
