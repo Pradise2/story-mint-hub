@@ -31,7 +31,6 @@ AI Crypto Story converts the cold, technical data of blockchain transactions int
 - **Responsive & Mobile-First:** A seamless experience whether you're on a desktop or on the go.
 
 ## 🛠️ Tech Stack
-
 This project is built with a modern, scalable, and robust technology stack:
 
 - **Framework:** [React](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/)
